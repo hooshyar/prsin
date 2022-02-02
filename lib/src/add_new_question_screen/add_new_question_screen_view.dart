@@ -127,7 +127,8 @@ class _AddNewQuestionScreenViewState extends State<AddNewQuestionScreenView> {
                         Answer(
                             priority: 0,
                             title: _answer1Controller.value.text,
-                            isCorrect: _answer == Answers.answer1),
+                            isCorrect:
+                                _answer == Answers.answer1 ? true : false),
                         Answer(
                             priority: 1,
                             title: _answer2Controller.value.text,
