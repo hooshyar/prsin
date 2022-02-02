@@ -7,6 +7,7 @@ class GeneralUser {
   String email;
   String userName;
   String uid;
+  String phoneNumber;
   List<Question> createdQuestions;
   int correctAnswersCount;
   List<String> tokens;
@@ -14,6 +15,7 @@ class GeneralUser {
     required this.email,
     required this.userName,
     required this.uid,
+    required this.phoneNumber,
     required this.createdQuestions,
     required this.correctAnswersCount,
     required this.tokens,
@@ -23,6 +25,7 @@ class GeneralUser {
     String? email,
     String? userName,
     String? uid,
+    String? phoneNumber,
     List<Question>? createdQuestions,
     int? correctAnswersCount,
     List<String>? tokens,
@@ -31,6 +34,7 @@ class GeneralUser {
       email: email ?? this.email,
       userName: userName ?? this.userName,
       uid: uid ?? this.uid,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       createdQuestions: createdQuestions ?? this.createdQuestions,
       correctAnswersCount: correctAnswersCount ?? this.correctAnswersCount,
       tokens: tokens ?? this.tokens,
@@ -42,6 +46,7 @@ class GeneralUser {
       'email': email,
       'userName': userName,
       'uid': uid,
+      'phoneNumber': phoneNumber,
       'createdQuestions': createdQuestions.map((x) => x.toMap()).toList(),
       'correctAnswersCount': correctAnswersCount,
       'tokens': tokens,
@@ -53,6 +58,7 @@ class GeneralUser {
       email: map['email'] ?? '',
       userName: map['userName'] ?? '',
       uid: map['uid'] ?? '',
+      phoneNumber: map['phoneNumber'],
       createdQuestions: List<Question>.from(
           map['createdQuestions']?.map((x) => Question.fromMap(x))),
       correctAnswersCount: map['correctAnswersCount']?.toInt() ?? 0,
@@ -67,7 +73,7 @@ class GeneralUser {
 
   @override
   String toString() {
-    return 'GeneralUser(email: $email, userName: $userName, uid: $uid, createdQuestions: $createdQuestions, correctAnswersCount: $correctAnswersCount, tokens: $tokens)';
+    return 'GeneralUser(email: $email, userName: $userName, uid: $uid, phoneNumber: $phoneNumber, createdQuestions: $createdQuestions, correctAnswersCount: $correctAnswersCount, tokens: $tokens)';
   }
 
   @override
@@ -78,6 +84,7 @@ class GeneralUser {
         other.email == email &&
         other.userName == userName &&
         other.uid == uid &&
+        other.phoneNumber == phoneNumber &&
         listEquals(other.createdQuestions, createdQuestions) &&
         other.correctAnswersCount == correctAnswersCount &&
         listEquals(other.tokens, tokens);
@@ -88,6 +95,7 @@ class GeneralUser {
     return email.hashCode ^
         userName.hashCode ^
         uid.hashCode ^
+        phoneNumber.hashCode ^
         createdQuestions.hashCode ^
         correctAnswersCount.hashCode ^
         tokens.hashCode;

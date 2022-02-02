@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:prsin/src/add_new_question_screen/add_new_question_screen_view.dart';
 import 'package:prsin/src/questions_screen/questions_screen_view.dart';
 import 'package:prsin/src/ranking_screens/rankings_screen_view.dart';
+import 'package:prsin/src/starter_screens/login_confirmation_screen_view.dart';
+import 'package:prsin/src/starter_screens/login_screen_view.dart';
+import 'package:prsin/src/starter_screens/register_confirmation_screen.dart';
+import 'package:prsin/src/starter_screens/register_screen_view.dart';
+import 'package:prsin/src/starter_screens/start_screen_view.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -9,7 +14,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: NavigatorHelperWidget(),
+      // home: NavigatorHelperWidget(),
+      home: StartScreenView(),
+      routes: {
+        RegisterScreenView.routeName: (context) => RegisterScreenView(),
+        RegisterConfirmationScreenView.routeName: (context) =>  RegisterConfirmationScreenView(),
+        LoginScreenView.routeName: (context) => LoginScreenView(),
+        LoginConfirmationScreenView.routeName: (context) => LoginConfirmationScreenView(),
+      },
     );
   }
 }
