@@ -1,9 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:prsin/src/app.dart';
+import 'package:prsin/src/data_models/user_data_model.dart';
 
 class RegisterConfirmationScreenView extends StatelessWidget {
-  RegisterConfirmationScreenView({Key? key}) : super(key: key);
+  RegisterConfirmationScreenView({Key? key, this.verificationID, this.userName})
+      : super(key: key);
 
   static const routeName = '/register_confirmation_screen';
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  final String? verificationID;
+  final String? userName;
 
   String? uid;
   String? username = '';
@@ -54,10 +62,43 @@ class RegisterConfirmationScreenView extends StatelessWidget {
               SizedBox(height: MediaQuery.of(context).size.height * 0.08),
               // verify button
               ElevatedButton(
-                onPressed: () {
-                  // verify the recieved code
+                onPressed: () async {
                   verificationCode = verificationCode!.trim();
-                  debugPrint('register confirmation screen view =======> code: $verificationCode');
+                  //recieved code from firebase auth on server side
+
+// returns a user credential
+                  PhoneAuthCredential _credential =
+                      PhoneAuthProvider.credential(
+                          verificationId: verificationID!,
+                          smsCode: verificationCode!);
+
+                  debugPrint('before');
+                  //login using created credentials
+                  UserCredential _userCredential =
+                      await _auth.signInWithCredential(_credential);
+//todo generate the device token here
+                  GeneralUser _gUser = GeneralUser(
+                      email: '',
+                      userName: userName ?? 'no name',
+                      uid: _userCredential.user!.uid,
+                      phoneNumber: _userCredential.user!.phoneNumber!,
+                      createdQuestions: [],
+                      correctAnswersCount: 0,
+                      tokens: []);
+
+                  await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(_userCredential.user!.uid)
+                      .set(_gUser.toMap(), SetOptions(merge: true));
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => NavigatorHelperWidget(
+                        gUser: _gUser,
+                      ),
+                    ),
+                  );
                 },
                 child: Text('Verify Phone Number'),
               ),

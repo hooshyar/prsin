@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:prsin/src/app.dart';
 
 class LoginConfirmationScreenView extends StatelessWidget {
-  LoginConfirmationScreenView({Key? key})
-      : super(key: key);
+  LoginConfirmationScreenView({Key? key}) : super(key: key);
   static const routeName = '/login_confirmation_screen';
   String? uid;
   String? phoneNumber = '';
@@ -55,7 +55,8 @@ class LoginConfirmationScreenView extends StatelessWidget {
                 onPressed: () {
                   // verify the recieved code
                   verificationCode = verificationCode!.trim();
-                  debugPrint('login confirmation code ======>' + verificationCode!);
+                  debugPrint(
+                      'login confirmation code ======>' + verificationCode!);
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.3,

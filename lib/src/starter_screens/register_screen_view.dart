@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:prsin/src/starter_screens/register_confirmation_screen.dart';
 
@@ -5,6 +6,8 @@ class RegisterScreenView extends StatelessWidget {
   RegisterScreenView({Key? key}) : super(key: key);
 
   static const routeName = '/register_screen';
+
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   final usernameController = TextEditingController();
   final phoneNumberController = TextEditingController();
@@ -87,13 +90,33 @@ class RegisterScreenView extends StatelessWidget {
             ),
             //submit button
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 username = usernameController.text.trim();
                 phoneNumber = phoneNumberController.text.trim();
-                debugPrint('register screen view =======> $username');
-                debugPrint('register screen view =======> $phoneNumber');
-                // navigate to confirm the phone number
-                Navigator.of(context).pushNamed(RegisterConfirmationScreenView.routeName);
+                //+964
+                //todo: verify phone number and and navigate to next screen for verification
+
+                await FirebaseAuth.instance.verifyPhoneNumber(
+                  phoneNumber: phoneNumber!,
+                  verificationCompleted: (PhoneAuthCredential credential) {
+                    debugPrint('verification completed');
+                  },
+                  verificationFailed: (FirebaseAuthException e) {
+                    debugPrint('failed ${e.toString()}');
+                  },
+                  codeSent: (String verificationId, int? resendToken) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RegisterConfirmationScreenView(
+                          verificationID: verificationId,
+                          userName: username,
+                        ),
+                      ),
+                    );
+                  },
+                  codeAutoRetrievalTimeout: (String verificationId) {},
+                );
               },
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.3,
