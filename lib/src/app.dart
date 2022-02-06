@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:prsin/src/add_new_question_screen/add_new_question_screen_view.dart';
 import 'package:prsin/src/data_models/user_data_model.dart';
 import 'package:prsin/src/questions_screen/questions_screen_view.dart';
 import 'package:prsin/src/ranking_screens/rankings_screen_view.dart';
+import 'package:prsin/src/services/firebase_auth.dart';
 import 'package:prsin/src/starter_screens/login_confirmation_screen_view.dart';
 import 'package:prsin/src/starter_screens/login_screen_view.dart';
 import 'package:prsin/src/starter_screens/register_confirmation_screen.dart';
@@ -33,8 +35,8 @@ class MyApp extends StatelessWidget {
 }
 
 class NavigatorHelperWidget extends StatefulWidget {
-  const NavigatorHelperWidget({Key? key, this.gUser}) : super(key: key);
-  final GeneralUser? gUser;
+  const NavigatorHelperWidget({Key? key}) : super(key: key);
+
   @override
   _NavigatorHelperWidgetState createState() => _NavigatorHelperWidgetState();
 }
@@ -43,7 +45,6 @@ class _NavigatorHelperWidgetState extends State<NavigatorHelperWidget> {
   @override
   void initState() {
     super.initState();
-    debugPrint(widget.gUser!.phoneNumber);
   }
 
   int _currentIndex = 0;
@@ -56,9 +57,10 @@ class _NavigatorHelperWidgetState extends State<NavigatorHelperWidget> {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider _auth = Provider.of<AuthProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('data'),
+        title: Text(_auth.generalUser!.phoneNumber),
         actions: [
           IconButton(
               onPressed: () async {

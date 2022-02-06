@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:prsin/src/app.dart';
 import 'package:prsin/src/data_models/user_data_model.dart';
+import 'package:prsin/src/services/firebase_auth.dart';
 
 class RegisterConfirmationScreenView extends StatelessWidget {
   RegisterConfirmationScreenView({Key? key, this.verificationID, this.userName})
@@ -16,7 +18,7 @@ class RegisterConfirmationScreenView extends StatelessWidget {
   String? uid;
   String? username = '';
   String? phoneNumber = '';
-  String? verificationCode;
+  String? smsCode;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +53,7 @@ class RegisterConfirmationScreenView extends StatelessWidget {
               // text field for recieved code from firebase auth
               TextField(
                 onChanged: (code) {
-                  verificationCode = code;
+                  smsCode = code;
                 },
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
@@ -63,40 +65,16 @@ class RegisterConfirmationScreenView extends StatelessWidget {
               // verify button
               ElevatedButton(
                 onPressed: () async {
-                  verificationCode = verificationCode!.trim();
-                  //recieved code from firebase auth on server side
-
-// returns a user credential
-                  PhoneAuthCredential _credential =
-                      PhoneAuthProvider.credential(
-                          verificationId: verificationID!,
-                          smsCode: verificationCode!);
-
-                  debugPrint('before');
-                  //login using created credentials
-                  UserCredential _userCredential =
-                      await _auth.signInWithCredential(_credential);
-//todo generate the device token here
-                  GeneralUser _gUser = GeneralUser(
-                      email: '',
-                      userName: userName ?? 'no name',
-                      uid: _userCredential.user!.uid,
-                      phoneNumber: _userCredential.user!.phoneNumber!,
-                      createdQuestions: [],
-                      correctAnswersCount: 0,
-                      tokens: []);
-
-                  await FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(_userCredential.user!.uid)
-                      .set(_gUser.toMap(), SetOptions(merge: true));
+                  smsCode = smsCode!.trim();
+                  Provider.of<AuthProvider>(context, listen: false)
+                      .setTheSmsCode(smsCode!);
+                  await Provider.of<AuthProvider>(context, listen: false)
+                      .verifySmsCode();
 
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => NavigatorHelperWidget(
-                        gUser: _gUser,
-                      ),
+                      builder: (_) => NavigatorHelperWidget(),
                     ),
                   );
                 },

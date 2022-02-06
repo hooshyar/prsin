@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:prsin/src/services/firebase_auth.dart';
 import 'package:prsin/src/starter_screens/register_confirmation_screen.dart';
 
 class RegisterScreenView extends StatelessWidget {
@@ -95,28 +97,19 @@ class RegisterScreenView extends StatelessWidget {
                 phoneNumber = phoneNumberController.text.trim();
                 //+964
                 //todo: verify phone number and and navigate to next screen for verification
+                //TODO: verify the phone num using provider
+                Provider.of<AuthProvider>(context, listen: false)
+                    .setTheUserName(username!);
+                Provider.of<AuthProvider>(context, listen: false)
+                    .setPhoneNumber(phoneNumber!);
 
-                await FirebaseAuth.instance.verifyPhoneNumber(
-                  phoneNumber: phoneNumber!,
-                  verificationCompleted: (PhoneAuthCredential credential) {
-                    debugPrint('verification completed');
-                  },
-                  verificationFailed: (FirebaseAuthException e) {
-                    debugPrint('failed ${e.toString()}');
-                  },
-                  codeSent: (String verificationId, int? resendToken) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegisterConfirmationScreenView(
-                          verificationID: verificationId,
-                          userName: username,
-                        ),
-                      ),
-                    );
-                  },
-                  codeAutoRetrievalTimeout: (String verificationId) {},
-                );
+                await Provider.of<AuthProvider>(context, listen: false)
+                    .verifyPhoneNumber()
+                    .then((value) => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => RegisterConfirmationScreenView(),
+                          ),
+                        ));
               },
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.3,
