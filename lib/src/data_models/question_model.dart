@@ -10,7 +10,7 @@ class Question {
   String? questionTitle;
   List<Answer>? answers;
   int? viewCount;
-  List<GeneralUser>? correctUsers; //
+  List<dynamic>? correctUsers; //
   String? author;
   DocumentReference? reference;
   Question({
@@ -24,7 +24,7 @@ class Question {
 
   // Question from snapshot factory
   Question.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data as Map<String, dynamic>,
+      : this.fromMap(snapshot.data() as Map<String, dynamic>,
             reference: snapshot.reference);
 
   Question.fromMap(Map<String, dynamic> map, {this.reference})

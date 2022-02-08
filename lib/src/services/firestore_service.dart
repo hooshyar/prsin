@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:prsin/src/data_models/question_model.dart';
 import 'package:prsin/src/data_models/user_data_model.dart';
 
@@ -28,6 +29,11 @@ class FirestoreService {
   Future<List<Question>> fetchAllUsersQuestions() async {
     var snapshot = await _db.collectionGroup('questions').get();
     return snapshot.docs.map((e) => Question.fromSnapshot(e)).toList();
+  }
+
+  Future<void> updateTheTitle(Question question) async {
+    await question.reference!.update({'questionTitle': 'new Title'}).then(
+        (value) => debugPrint('changed'));
   }
 
   //read the entire questions from the database

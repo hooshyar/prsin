@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:prsin/src/data_models/user_data_model.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   GeneralUser? generalUser;
@@ -43,7 +43,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> verifyPhoneNumber() async {
-    await _auth.verifyPhoneNumber(
+    await auth.verifyPhoneNumber(
       phoneNumber: phoneNumber!,
       verificationCompleted: (PhoneAuthCredential credential) {
         debugPrint('verification completed');
@@ -76,7 +76,7 @@ class AuthProvider extends ChangeNotifier {
     debugPrint('before');
 
     UserCredential _userCredential =
-        await _auth.signInWithCredential(_credential);
+        await auth.signInWithCredential(_credential);
 
     GeneralUser _gUser = GeneralUser(
         email: '',
@@ -97,5 +97,21 @@ class AuthProvider extends ChangeNotifier {
         .set(gUser.toMap(), SetOptions(merge: true));
 
     setTheGUser(gUser);
+  }
+
+  Stream<User?> get authStatusChanges => auth.authStateChanges();
+
+  Future<bool> isUserLoggedIn() async {
+    if (auth.currentUser != null) {
+      GeneralUser _generaluser = await _firestore
+          .collection('users')
+          .doc(auth.currentUser!.uid)
+          .get()
+          .then((value) => GeneralUser.fromSnapshot(value));
+
+      setTheGUser(_generaluser);
+      return true;
+    }
+    return false;
   }
 }

@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:prsin/src/data_models/question_model.dart';
+import 'package:prsin/src/services/firestore_service.dart';
 
 enum Answers { answer1, answer2, answer3, answer4 }
 
@@ -22,6 +24,8 @@ class _QuestionCardWidgetState extends State<QuestionCardWidget> {
       subtitle: Text(widget.question.author ?? 'no author'),
       children: answers(widget.question),
       trailing: Text(widget.question.viewCount.toString()),
+      onExpansionChanged: (value) =>
+          FirestoreService().updateTheTitle(widget.question),
     );
   }
 

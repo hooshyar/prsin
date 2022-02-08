@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:prsin/src/data_models/question_model.dart';
 
@@ -11,15 +12,23 @@ class GeneralUser {
   List<Question> createdQuestions;
   int correctAnswersCount;
   List<String> tokens;
-  GeneralUser({
-    required this.email,
-    required this.userName,
-    required this.uid,
-    required this.phoneNumber,
-    required this.createdQuestions,
-    required this.correctAnswersCount,
-    required this.tokens,
-  });
+  DocumentReference? reference;
+  GeneralUser(
+      {required this.email,
+      required this.userName,
+      required this.uid,
+      required this.phoneNumber,
+      required this.createdQuestions,
+      required this.correctAnswersCount,
+      required this.tokens,
+      this.reference});
+
+  // General user from snapshot reference from firestore
+
+  factory GeneralUser.fromSnapshot(DocumentSnapshot snapshot) {
+    return GeneralUser.fromMap(snapshot.data() as Map<String, dynamic>,
+        reference: snapshot.reference);
+  }
 
   GeneralUser copyWith({
     String? email,
@@ -53,7 +62,8 @@ class GeneralUser {
     };
   }
 
-  factory GeneralUser.fromMap(Map<String, dynamic> map) {
+  factory GeneralUser.fromMap(Map<String, dynamic> map,
+      {DocumentReference? reference}) {
     return GeneralUser(
       email: map['email'] ?? '',
       userName: map['userName'] ?? '',

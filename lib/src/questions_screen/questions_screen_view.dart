@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:prsin/src/data_models/question_model.dart';
@@ -18,7 +19,7 @@ class QuestionsScreenViews extends StatelessWidget {
             future: _firestoreService.fetchAllUsersQuestions(),
             builder: (context, snap) {
               if (!snap.hasData) {
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               } else if (snap.hasError) {
                 return Text(snap.error.toString());
               }
