@@ -98,4 +98,18 @@ class AuthProvider extends ChangeNotifier {
 
     setTheGUser(gUser);
   }
+
+  //TODO: check if the user logged in
+  Future<bool> isUserLoggedIn() async {
+    if (_auth.currentUser != null) {
+      GeneralUser _theGUser = await _firestore
+          .collection('users')
+          .doc(_auth.currentUser!.uid)
+          .get()
+          .then((value) => GeneralUser.fromSnapshot(value));
+      setTheGUser(_theGUser);
+      return true;
+    }
+    return false;
+  }
 }

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:prsin/src/data_models/question_model.dart';
+import 'package:prsin/src/data_models/user_data_model.dart';
+import 'package:prsin/src/services/firebase_auth.dart';
+import 'package:prsin/src/services/firestore_service.dart';
 
 enum Answers { answer1, answer2, answer3, answer4 }
 
@@ -13,6 +17,8 @@ class QuestionCardWidget extends StatefulWidget {
 }
 
 class _QuestionCardWidgetState extends State<QuestionCardWidget> {
+  FirestoreService _db = FirestoreService();
+
   Answers? _answer = Answers.answer1;
   bool _isCorrect = false;
   @override
@@ -26,6 +32,8 @@ class _QuestionCardWidgetState extends State<QuestionCardWidget> {
   }
 
   List<Widget> answers(Question question) {
+    GeneralUser? _user =
+        Provider.of<AuthProvider>(context, listen: false).generalUser;
     return [
       RadioListTile<Answers>(
         title: Text(
@@ -80,8 +88,15 @@ class _QuestionCardWidgetState extends State<QuestionCardWidget> {
         },
       ),
       ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             debugPrint(_isCorrect.toString());
+            await _db
+                .addToAnsweredQuestions(question, _user!)
+                .then((value) => debugPrint('added to answered'));
+            if (_isCorrect == true) {
+              await _db.addPoints(_user);
+            }
+            _db.removePoints(_user);
           },
           child: Text('submit')),
       SizedBox(

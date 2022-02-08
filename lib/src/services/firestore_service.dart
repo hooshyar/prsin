@@ -5,12 +5,18 @@ import 'package:prsin/src/data_models/user_data_model.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  addPoints() {
-    //TODO: ++ user points
+  addPoints(GeneralUser gUser) async {
+    await _db
+        .collection('users')
+        .doc(gUser.uid)
+        .update({'correctAnswersCount': FieldValue.increment(1)});
   }
 
-  removePoints() {
-    //TODO: -- user points
+  removePoints(GeneralUser gUser) async {
+    await _db
+        .collection('users')
+        .doc(gUser.uid)
+        .update({'correctAnswersCount': FieldValue.increment(-1)});
   }
 
   //add questions to questions collection
@@ -31,5 +37,14 @@ class FirestoreService {
   }
 
   //read the entire questions from the database
-
+  //add to answered questions
+  Future<void> addToAnsweredQuestions(
+      Question question, GeneralUser user) async {
+    await _db
+        .collection('users')
+        .doc(user.uid)
+        .collection('answered_questions')
+        .doc(question.reference!.id)
+        .set(question.toMap());
+  }
 }

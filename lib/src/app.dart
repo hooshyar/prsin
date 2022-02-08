@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:prsin/src/add_new_question_screen/add_new_question_screen_view.dart';
+import 'package:prsin/src/auth_handler_screen.dart/auth_handler_screen.dart';
 import 'package:prsin/src/data_models/user_data_model.dart';
 import 'package:prsin/src/questions_screen/questions_screen_view.dart';
 import 'package:prsin/src/ranking_screens/rankings_screen_view.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       // home: NavigatorHelperWidget(),
       initialRoute: '/',
       routes: {
-        '/': (_) => StartScreenView(),
+        '/': (_) => AuthHandlerScreen(),
         RegisterScreenView.routeName: (context) => RegisterScreenView(),
         RegisterConfirmationScreenView.routeName: (context) =>
             RegisterConfirmationScreenView(),

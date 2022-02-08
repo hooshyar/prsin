@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:prsin/src/data_models/question_model.dart';
 
+//TODO: Add from snapshot
 class GeneralUser {
   String email;
   String userName;
@@ -11,15 +13,27 @@ class GeneralUser {
   List<Question> createdQuestions;
   int correctAnswersCount;
   List<String> tokens;
-  GeneralUser({
-    required this.email,
-    required this.userName,
-    required this.uid,
-    required this.phoneNumber,
-    required this.createdQuestions,
-    required this.correctAnswersCount,
-    required this.tokens,
-  });
+  DocumentReference? reference;
+  GeneralUser(
+      {required this.email,
+      required this.userName,
+      required this.uid,
+      required this.phoneNumber,
+      required this.createdQuestions,
+      required this.correctAnswersCount,
+      required this.tokens,
+      this.reference});
+
+  GeneralUser.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data() as Map<String, dynamic>,
+            reference: snapshot.reference);
+
+  // factory GeneralUser.fromSnapshot(DocumentSnapshot snapshot) {
+
+  //   return GeneralUser.fromMap(snapshot.data() as Map<String, dynamic>,
+  //       reference: snapshot.reference);
+
+  // }
 
   GeneralUser copyWith({
     String? email,
@@ -53,18 +67,15 @@ class GeneralUser {
     };
   }
 
-  factory GeneralUser.fromMap(Map<String, dynamic> map) {
-    return GeneralUser(
-      email: map['email'] ?? '',
-      userName: map['userName'] ?? '',
-      uid: map['uid'] ?? '',
-      phoneNumber: map['phoneNumber'],
-      createdQuestions: List<Question>.from(
-          map['createdQuestions']?.map((x) => Question.fromMap(x))),
-      correctAnswersCount: map['correctAnswersCount']?.toInt() ?? 0,
-      tokens: List<String>.from(map['tokens']),
-    );
-  }
+  GeneralUser.fromMap(Map<String, dynamic> map, {DocumentReference? reference})
+      : email = map['email'] ?? '',
+        userName = map['userName'] ?? '',
+        uid = map['uid'] ?? '',
+        phoneNumber = map['phoneNumber'],
+        createdQuestions = List<Question>.from(
+            map['createdQuestions']?.map((x) => Question.fromMap(x))),
+        correctAnswersCount = map['correctAnswersCount']?.toInt() ?? 0,
+        tokens = List<String>.from(map['tokens']);
 
   String toJson() => json.encode(toMap());
 
