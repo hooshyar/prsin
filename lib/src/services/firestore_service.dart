@@ -40,11 +40,9 @@ class FirestoreService {
   //add to answered questions
   Future<void> addToAnsweredQuestions(
       Question question, GeneralUser user) async {
-    await _db
-        .collection('users')
-        .doc(user.uid)
-        .collection('answered_questions')
-        .doc(question.reference!.id)
-        .set(question.toMap());
+    await _db.collection('users').doc(user.uid).update({
+      'answeredQuestions':
+          FieldValue == null ? [] : FieldValue.arrayUnion([question.toMap()])
+    });
   }
 }

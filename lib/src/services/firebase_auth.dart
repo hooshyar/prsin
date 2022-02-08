@@ -84,6 +84,7 @@ class AuthProvider extends ChangeNotifier {
         uid: _userCredential.user!.uid,
         phoneNumber: _userCredential.user!.phoneNumber!,
         createdQuestions: [],
+        answeredQuestions: [],
         correctAnswersCount: 0,
         tokens: []);
 
@@ -108,7 +109,6 @@ class AuthProvider extends ChangeNotifier {
           .get()
           .then((value) => GeneralUser.fromSnapshot(value));
       setTheGUser(_theGUser);
-      return true;
     }
     return false;
   }

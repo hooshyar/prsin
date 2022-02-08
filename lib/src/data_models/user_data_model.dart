@@ -11,6 +11,7 @@ class GeneralUser {
   String uid;
   String phoneNumber;
   List<Question> createdQuestions;
+  List<Question>? answeredQuestions;
   int correctAnswersCount;
   List<String> tokens;
   DocumentReference? reference;
@@ -20,6 +21,7 @@ class GeneralUser {
       required this.uid,
       required this.phoneNumber,
       required this.createdQuestions,
+      this.answeredQuestions,
       required this.correctAnswersCount,
       required this.tokens,
       this.reference});
@@ -41,6 +43,7 @@ class GeneralUser {
     String? uid,
     String? phoneNumber,
     List<Question>? createdQuestions,
+    List<Question>? answeredQuestions,
     int? correctAnswersCount,
     List<String>? tokens,
   }) {
@@ -50,6 +53,7 @@ class GeneralUser {
       uid: uid ?? this.uid,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       createdQuestions: createdQuestions ?? this.createdQuestions,
+      answeredQuestions: answeredQuestions ?? this.createdQuestions,
       correctAnswersCount: correctAnswersCount ?? this.correctAnswersCount,
       tokens: tokens ?? this.tokens,
     );
@@ -62,6 +66,9 @@ class GeneralUser {
       'uid': uid,
       'phoneNumber': phoneNumber,
       'createdQuestions': createdQuestions.map((x) => x.toMap()).toList(),
+      'answeredQuestions': answeredQuestions == null
+          ? []
+          : answeredQuestions!.map((x) => x.toMap()).toList(),
       'correctAnswersCount': correctAnswersCount,
       'tokens': tokens,
     };
@@ -74,6 +81,10 @@ class GeneralUser {
         phoneNumber = map['phoneNumber'],
         createdQuestions = List<Question>.from(
             map['createdQuestions']?.map((x) => Question.fromMap(x))),
+        answeredQuestions = map['answeredQuestions'] == null
+            ? []
+            : List<Question>.from(
+                map['answeredQuestions']?.map((x) => Question.fromMap(x))),
         correctAnswersCount = map['correctAnswersCount']?.toInt() ?? 0,
         tokens = List<String>.from(map['tokens']);
 
