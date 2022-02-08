@@ -45,7 +45,6 @@ class QuestionsScreenViews extends StatelessWidget {
   isQuestionExists(GeneralUser generalUser, Question question) {
     bool _isExists = false;
     List<Question>? _answeredQuestions = generalUser.answeredQuestions;
-
     _answeredQuestions!.forEach((element) {
       if (element.reference!.id == question.reference!.id) {
         _isExists = true;
