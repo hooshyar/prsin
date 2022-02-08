@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:prsin/src/data_models/answer_data_model.dart';
 import 'package:prsin/src/data_models/question_model.dart';
+import 'package:prsin/src/data_models/user_data_model.dart';
+import 'package:prsin/src/services/firebase_auth.dart';
 import 'package:prsin/src/services/firestore_service.dart';
 
 enum Answers { answer1, answer2, answer3, answer4 }
@@ -120,29 +123,36 @@ class _AddNewQuestionScreenViewState extends State<AddNewQuestionScreenView> {
                 child: Text('Add'),
                 onPressed: () {
                   Question _currentQuestion = Question(
-                      questionTitle: _questionController.value.text,
-                      viewCount: 0,
-                      correctUsers: [],
-                      answers: [
-                        Answer(
-                            priority: 0,
-                            title: _answer1Controller.value.text,
-                            isCorrect:
-                                _answer == Answers.answer1 ? true : false),
-                        Answer(
-                            priority: 1,
-                            title: _answer2Controller.value.text,
-                            isCorrect: _answer == Answers.answer2),
-                        Answer(
-                            priority: 2,
-                            title: _answer3Controller.value.text,
-                            isCorrect: _answer == Answers.answer3),
-                        Answer(
-                            priority: 3,
-                            title: _answer4Controller.value.text,
-                            isCorrect: _answer == Answers.answer4),
-                      ]);
-                  _firestoreService.addAquestion(question: _currentQuestion);
+                    questionTitle: _questionController.value.text,
+                    viewCount: 0,
+                    author: Provider.of<AuthProvider>(context, listen: false)
+                        .generalUser!
+                        .uid,
+                    correctUsers: [],
+                    answers: [
+                      Answer(
+                          priority: 0,
+                          title: _answer1Controller.value.text,
+                          isCorrect: _answer == Answers.answer1 ? true : false),
+                      Answer(
+                          priority: 1,
+                          title: _answer2Controller.value.text,
+                          isCorrect: _answer == Answers.answer2),
+                      Answer(
+                          priority: 2,
+                          title: _answer3Controller.value.text,
+                          isCorrect: _answer == Answers.answer3),
+                      Answer(
+                          priority: 3,
+                          title: _answer4Controller.value.text,
+                          isCorrect: _answer == Answers.answer4),
+                    ],
+                  );
+                  _firestoreService.addAquestion(
+                      question: _currentQuestion,
+                      generalUser:
+                          Provider.of<AuthProvider>(context, listen: false)
+                              .generalUser!);
                 },
               ),
             ),
